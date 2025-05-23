@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css">
+</head>
+<body>
+    <h2>Hola, <span th:text="${username}"></span>!</h2>
+    <form th:action="@{/todo}" method="post">
+        <input id="todoInput" name="todo" placeholder="Nueva tarea" required>
+        <button id="addButton" type="submit">Agregar</button>
+    </form>
+    <ul>
+        <li th:each="t : ${todos}" th:text="${t.text}"></li>
+    </ul>
+    <a href="/logout">Cerrar sesión</a>
+</body>
+</html>
