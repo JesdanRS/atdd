@@ -46,7 +46,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class LoginTest {
     private WebDriver driver;
-
+// ! Agregar test de crear usuario si es que no existe
     @BeforeTest
     public void setDriver() throws Exception {
         WebDriverManager.chromedriver().setup();

@@ -45,7 +45,8 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 // - Se incluye una espera de 2 segundos para asegurar la carga de la página
 // - Se verifica tanto el mensaje de éxito como la redirección
 /****************************************/
-
+//! CREAR USUARIO DIFERENTE CADA VEZ 
+//! O ELIMINAR USUARIO ANTERIOR MEDIANTE EL CACHE O ALGO
 public class RegistroTest {
     private WebDriver driver;
 
@@ -66,9 +67,8 @@ public class RegistroTest {
     public void registroExitoso() throws InterruptedException {
         // Navega a la página de registro
         driver.get("http://localhost:8080/register");
-
         // Ingresa nombre de usuario
-        driver.findElement(By.id("username")).sendKeys("usuarioTestNG");
+        driver.findElement(By.id("username")).sendKeys("usuarioTestNGER");
         // Ingresa correo electrónico
         driver.findElement(By.id("email")).sendKeys("usuarioTestNG@atdd.com");
         // Ingresa contraseña
