@@ -11,6 +11,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.time.Instant;
 
 /****************************************/
 // Historia de Usuario: Como usuario nuevo quiero registrar mis datos en la aplicación
@@ -45,8 +46,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 // - Se incluye una espera de 2 segundos para asegurar la carga de la página
 // - Se verifica tanto el mensaje de éxito como la redirección
 /****************************************/
-//! CREAR USUARIO DIFERENTE CADA VEZ 
-//! O ELIMINAR USUARIO ANTERIOR MEDIANTE EL CACHE O ALGO
 public class RegistroTest {
     private WebDriver driver;
 
@@ -65,12 +64,17 @@ public class RegistroTest {
 
     @Test
     public void registroExitoso() throws InterruptedException {
+        // Genera un nombre de usuario único usando timestamp
+        String timestamp = String.valueOf(Instant.now().getEpochSecond());
+        String username = "usuario" + timestamp;
+        String email = "usuario" + timestamp + "@atdd.com";
+        
         // Navega a la página de registro
         driver.get("http://localhost:8080/register");
-        // Ingresa nombre de usuario
-        driver.findElement(By.id("username")).sendKeys("usuarioTestNGER");
-        // Ingresa correo electrónico
-        driver.findElement(By.id("email")).sendKeys("usuarioTestNG@atdd.com");
+        // Ingresa nombre de usuario único
+        driver.findElement(By.id("username")).sendKeys(username);
+        // Ingresa correo electrónico único
+        driver.findElement(By.id("email")).sendKeys(email);
         // Ingresa contraseña
         driver.findElement(By.id("password")).sendKeys("clave123");
         // Confirma contraseña
