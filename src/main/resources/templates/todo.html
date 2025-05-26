@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- CSRF tokens removed as CSRF is disabled in security config -->
+    <title>Todo List</title>
+    <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css">
+</head>
+<body>
+    <h2>Hola, <span th:text="${username}"></span>!</h2>
+    <form th:action="@{/todo}" method="post">
+        <input id="todoInput" name="todo" placeholder="Nueva tarea" required>
+        <button id="addButton" type="submit">Agregar</button>
+    </form>
+    <ul>
+        <li th:each="t : ${todos}">
+            <span th:text="${t.text}"></span>
+            <button class="delete-btn" th:attr="data-id=${t.id}" onclick="confirmarBorrado(this)">Borrar</button>
+        </li>
+    </ul>
+    
+    <!-- Diálogo de confirmación -->
+    <div id="confirmDialog" class="confirm-dialog">
+        <div class="confirm-content">
+            <p>¿Estás seguro de que deseas borrar esta tarea?</p>
+            <div class="confirm-buttons">
+                <button id="confirmYes" onclick="borrarTarea()">Aceptar</button>
+                <button id="confirmNo" onclick="cerrarDialogo()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let tareaABorrar = null;
+        
+        function confirmarBorrado(btn) {
+            tareaABorrar = btn.getAttribute('data-id');
+            document.getElementById('confirmDialog').style.display = 'flex';
+        }
+        
+        function cerrarDialogo() {
+            document.getElementById('confirmDialog').style.display = 'none';
+        }
+        
+        function borrarTarea() {
+            if (tareaABorrar) {
+                fetch('/todo/' + tareaABorrar, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Eliminar el elemento de la lista en la interfaz
+                        const elementoABorrar = document.querySelector(`button[data-id="${tareaABorrar}"]`).closest('li');
+                        if (elementoABorrar) {
+                            elementoABorrar.remove();
+                        }
+                        cerrarDialogo();
+                    } else {
+                        alert('Error al borrar la tarea. Por favor, intenta de nuevo.');
+                        cerrarDialogo();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al borrar la tarea. Por favor, intenta de nuevo.');
+                    cerrarDialogo();
+                });
+            }
+        }
+    </script>
+    <a href="/logout">Cerrar sesión</a>
+</body>
+</html>
