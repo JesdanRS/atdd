@@ -3,8 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <!-- CSRF tokens removed as CSRF is disabled in security config -->
     <title>Todo List</title>
     <link rel="stylesheet" th:href="@{/styles.css}" href="/styles.css">
 </head>
@@ -49,8 +48,7 @@
                 fetch('/todo/' + tareaABorrar, {
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.content
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then(response => {
