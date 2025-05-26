@@ -17,17 +17,19 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 //
 // Caso de Prueba: Login Exitoso de Usuario
 // Descripción: Verifica que un usuario registrado puede iniciar sesión y acceder a sus tareas
+// Si el usuario no existe, el sistema lo registra automáticamente y luego intenta el login nuevamente.
+// Si el usuario ya existe, solo realiza el login.
 //
 // Precondiciones:
 // - La aplicación está en ejecución en http://localhost:8080
 // - El navegador Chrome/Brave está instalado y configurado
-// - Existe un usuario registrado con las credenciales de prueba
 //
 // Pasos de la Prueba de Aceptación:
 // 1. Ingresar a la página de login (/login)
-// 2. Ingresar nombre de usuario: "usuarioTestNG"
+// 2. Ingresar nombre de usuario: "usuarioTestNG" (o uno inexistente para probar el flujo completo)
 // 3. Ingresar contraseña: "clave123"
 // 4. Hacer clic en el botón de login
+// 5. Si el login falla por usuario inexistente, se registra automáticamente y se repite el login
 //
 // Resultados Esperados:
 // 1. El sistema redirige a la pantalla de tareas
@@ -35,13 +37,14 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 // 3. El botón de agregar tarea está visible y disponible
 //
 // Datos de Prueba:
-// - Usuario: usuarioTestNG
+// - Usuario: usuarioTestNG (o uno nuevo para probar registro)
 // - Contraseña: clave123
 //
 // Notas:
 // - La prueba utiliza Selenium WebDriver para automatización
 // - Se incluye una espera de 2 segundos para asegurar la carga de la página
 // - Se verifica tanto el saludo personalizado como los elementos de la interfaz
+// - El test es robusto: si el usuario no existe, lo registra automáticamente; si ya existe, solo realiza login
 /****************************************/
 
 public class LoginTest {
@@ -62,36 +65,74 @@ public class LoginTest {
 
     @Test
     public void loginExitoso() throws InterruptedException {
-        // Navega a la página de login
+        // Intenta login con usuario inexistente
+        String username = "Fulano";
         driver.get("http://localhost:8080/login");
-
-        // Ingresa nombre de usuario
-        driver.findElement(By.id("username")).sendKeys("usuarioTestNG");
-        // Ingresa contraseña
+        driver.findElement(By.id("username")).sendKeys(username);
         driver.findElement(By.id("password")).sendKeys("clave123");
-        // Hace clic en el botón de login
         driver.findElement(By.id("loginButton")).click();
-
         TimeUnit.SECONDS.sleep(2);
 
-        // Verifica que está en la pantalla de tareas
+        boolean loginCorrecto = false;
+        try {
+            WebElement addBtn = driver.findElement(By.id("addButton"));
+            loginCorrecto = addBtn.isDisplayed();
+        } catch (Exception e) {
+            loginCorrecto = false;
+        }
+
+        if (!loginCorrecto) {
+            // Solo intenta registrar si el usuario no existe
+            if (!usuarioExiste(username)) {
+                crearUsuarioSiNoExiste(username);
+            }
+            // Intenta login de nuevo
+            driver.get("http://localhost:8080/login");
+            driver.findElement(By.id("username")).clear();
+            driver.findElement(By.id("username")).sendKeys(username);
+            driver.findElement(By.id("password")).clear();
+            driver.findElement(By.id("password")).sendKeys("clave123");
+            driver.findElement(By.id("loginButton")).click();
+            TimeUnit.SECONDS.sleep(2);
+        }
+
         WebElement addBtn = driver.findElement(By.id("addButton"));
         assertTrue(addBtn.isDisplayed(), "El botón de agregar tarea debe estar presente tras login.");
-        assertTrue(driver.getPageSource().contains("Hola, usuarioTestNG") ||
+        assertTrue(driver.getPageSource().contains("Hola, " + username) ||
                    driver.getPageSource().toLowerCase().contains("tarea"),
                    "Debe mostrar saludo o lista de tareas tras login.");
     }
 
     @Test
-    public void crearUsuarioSiNoExiste() throws InterruptedException {
+    // Cambia el método para aceptar el username como parámetro
+    public void crearUsuarioSiNoExiste(String username) throws InterruptedException {
         driver.get("http://localhost:8080/register");
-        // Intenta registrar el usuario de prueba
-        driver.findElement(By.id("username")).sendKeys("usuarioTestNG");
-        driver.findElement(By.id("email")).sendKeys("usuario@test.com");
+        driver.findElement(By.id("username")).clear();
+        driver.findElement(By.id("username")).sendKeys(username);
+        driver.findElement(By.id("email")).clear();
+        driver.findElement(By.id("email")).sendKeys(username + "@test.com");
+        driver.findElement(By.id("password")).clear();
         driver.findElement(By.id("password")).sendKeys("clave123");
+        driver.findElement(By.id("confirm")).clear();
         driver.findElement(By.id("confirm")).sendKeys("clave123");
         driver.findElement(By.id("registerButton")).click();
         TimeUnit.SECONDS.sleep(1);
-        // Si el usuario ya existe, el sistema mostrará un mensaje, pero no es un error para la prueba
+    }
+
+    // Método auxiliar para verificar si el usuario existe
+    public boolean usuarioExiste(String username) throws InterruptedException {
+        driver.get("http://localhost:8080/login");
+        driver.findElement(By.id("username")).clear();
+        driver.findElement(By.id("username")).sendKeys(username);
+        driver.findElement(By.id("password")).clear();
+        driver.findElement(By.id("password")).sendKeys("clave123");
+        driver.findElement(By.id("loginButton")).click();
+        TimeUnit.SECONDS.sleep(2);
+        try {
+            WebElement addBtn = driver.findElement(By.id("addButton"));
+            return addBtn.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
