@@ -56,6 +56,22 @@ public class LoginTest {
         ChromeOptions options = new ChromeOptions();
         options.setBinary("C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe");
         driver = new ChromeDriver(options);
+        try {
+            
+            // Navega a la página de registro
+            driver.get("http://localhost:8080/register");
+            // Ingresa nombre de usuario
+            driver.findElement(By.id("username")).sendKeys("Fulano");
+            // Ingresa correo electrónico
+            driver.findElement(By.id("email")).sendKeys("todoUserTestNG@atdd.com");
+            // Ingresa contraseña
+            driver.findElement(By.id("password")).sendKeys("clave123");
+            // Confirma contraseña
+            driver.findElement(By.id("confirm")).sendKeys("clave123");
+            // Hace clic en el botón de registro
+            driver.findElement(By.id("registerButton")).click();
+            TimeUnit.SECONDS.sleep(1);
+        } catch (Exception ignored) {}
     }
 
     @AfterTest
@@ -82,10 +98,6 @@ public class LoginTest {
         }
 
         if (!loginCorrecto) {
-            // Solo intenta registrar si el usuario no existe
-            if (!usuarioExiste(username)) {
-                crearUsuarioSiNoExiste(username);
-            }
             // Intenta login de nuevo
             driver.get("http://localhost:8080/login");
             driver.findElement(By.id("username")).clear();
@@ -103,36 +115,4 @@ public class LoginTest {
                    "Debe mostrar saludo o lista de tareas tras login.");
     }
 
-    @Test
-    // Cambia el método para aceptar el username como parámetro
-    public void crearUsuarioSiNoExiste(String username) throws InterruptedException {
-        driver.get("http://localhost:8080/register");
-        driver.findElement(By.id("username")).clear();
-        driver.findElement(By.id("username")).sendKeys(username);
-        driver.findElement(By.id("email")).clear();
-        driver.findElement(By.id("email")).sendKeys(username + "@test.com");
-        driver.findElement(By.id("password")).clear();
-        driver.findElement(By.id("password")).sendKeys("clave123");
-        driver.findElement(By.id("confirm")).clear();
-        driver.findElement(By.id("confirm")).sendKeys("clave123");
-        driver.findElement(By.id("registerButton")).click();
-        TimeUnit.SECONDS.sleep(1);
-    }
-
-    // Método auxiliar para verificar si el usuario existe
-    public boolean usuarioExiste(String username) throws InterruptedException {
-        driver.get("http://localhost:8080/login");
-        driver.findElement(By.id("username")).clear();
-        driver.findElement(By.id("username")).sendKeys(username);
-        driver.findElement(By.id("password")).clear();
-        driver.findElement(By.id("password")).sendKeys("clave123");
-        driver.findElement(By.id("loginButton")).click();
-        TimeUnit.SECONDS.sleep(2);
-        try {
-            WebElement addBtn = driver.findElement(By.id("addButton"));
-            return addBtn.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
