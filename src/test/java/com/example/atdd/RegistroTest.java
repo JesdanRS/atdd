@@ -25,11 +25,13 @@ import java.time.Instant;
 //
 // Pasos de la Prueba de Aceptación:
 // 1. Ingresar a la página de registro (/register)
-// 2. Ingresar nombre de usuario único: "usuarioTestNG"
-// 3. Ingresar correo electrónico válido: "usuarioTestNG@atdd.com"
-// 4. Ingresar contraseña: "clave123"
-// 5. Confirmar contraseña: "clave123"
-// 6. Hacer clic en el botón de registro
+// 2. Generar un nombre de usuario único usando timestamp
+// 3. Generar un correo electrónico único basado en el mismo timestamp
+// 4. Ingresar el nombre de usuario único generado
+// 5. Ingresar el correo electrónico único generado
+// 6. Ingresar contraseña: "clave123"
+// 7. Confirmar contraseña: "clave123"
+// 8. Hacer clic en el botón de registro
 //
 // Resultados Esperados:
 // 1. El sistema redirige a la página de login
@@ -37,14 +39,15 @@ import java.time.Instant;
 // 3. El botón de login está visible y disponible para su uso
 //
 // Datos de Prueba:
-// - Usuario: usuarioTestNG
-// - Email: usuarioTestNG@atdd.com
+// - Usuario: Generado dinámicamente con formato "usuario" + timestamp
+// - Email: Generado dinámicamente con formato "usuario" + timestamp + "@atdd.com"
 // - Contraseña: clave123
 //
 // Notas:
 // - La prueba utiliza Selenium WebDriver para automatización
 // - Se incluye una espera de 2 segundos para asegurar la carga de la página
 // - Se verifica tanto el mensaje de éxito como la redirección
+// - Se genera un usuario único en cada ejecución para evitar conflictos
 /****************************************/
 public class RegistroTest {
     private WebDriver driver;
