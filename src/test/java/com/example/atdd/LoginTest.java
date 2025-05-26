@@ -81,4 +81,17 @@ public class LoginTest {
                    driver.getPageSource().toLowerCase().contains("tarea"),
                    "Debe mostrar saludo o lista de tareas tras login.");
     }
+
+    @Test
+    public void crearUsuarioSiNoExiste() throws InterruptedException {
+        driver.get("http://localhost:8080/register");
+        // Intenta registrar el usuario de prueba
+        driver.findElement(By.id("username")).sendKeys("usuarioTestNG");
+        driver.findElement(By.id("email")).sendKeys("usuario@test.com");
+        driver.findElement(By.id("password")).sendKeys("clave123");
+        driver.findElement(By.id("confirm")).sendKeys("clave123");
+        driver.findElement(By.id("registerButton")).click();
+        TimeUnit.SECONDS.sleep(1);
+        // Si el usuario ya existe, el sistema mostrará un mensaje, pero no es un error para la prueba
+    }
 }
