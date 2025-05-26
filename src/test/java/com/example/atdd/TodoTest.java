@@ -13,41 +13,6 @@ import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /****************************************/
-// Historia de Usuario: Como usuario autenticado quiero agregar una tarea
-//
-// Caso de Prueba: Agregar Nueva Tarea
-// Descripción: Verifica que un usuario autenticado puede agregar una nueva tarea a su lista
-//
-// Precondiciones:
-// - La aplicación está en ejecución en http://localhost:8080
-// - El navegador Chrome/Brave está instalado y configurado
-// - Se requiere un usuario registrado y autenticado
-//
-// Pasos de la Prueba de Aceptación:
-// 1. Preparación del Usuario:
-//    a. Registrar usuario si no existe (todoUserTestNG)
-//    b. Iniciar sesión con el usuario
-// 2. Agregar Tarea:
-//    a. Navegar a la página de tareas (/todo)
-//    b. Ingresar texto de la tarea: "Tarea ATDD TestNG"
-//    c. Hacer clic en el botón de agregar
-//
-// Resultados Esperados:
-// 1. La tarea "Tarea ATDD TestNG" aparece en la lista de tareas
-// 2. La tarea es visible y legible en la interfaz
-//
-// Datos de Prueba:
-// - Usuario: todoUserTestNG
-// - Email: todoUserTestNG@atdd.com
-// - Contraseña: claveTodo
-// - Texto de la tarea: "Tarea ATDD TestNG"
-//
-// Notas:
-// - La prueba incluye registro automático del usuario si no existe
-// - Se manejan las excepciones si el usuario ya está registrado
-// - Se incluyen esperas estratégicas para asegurar la carga de elementos
-// - Se utiliza XPath para verificar la presencia de la tarea en la lista
-/****************************************/
 
 /****************************************/
 // Historia de Usuario: Como usuario autenticado quiero borrar una tarea
